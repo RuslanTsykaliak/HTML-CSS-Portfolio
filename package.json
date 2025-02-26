@@ -1,7 +1,4 @@
 {
-  "scripts": {
-    "build": "echo 'No build needed'"
-  },
   "dependencies": {
     "express": "^4.21.2",
     "path": "^0.12.7"
