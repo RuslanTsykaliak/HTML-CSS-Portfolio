@@ -1,33 +1,15 @@
 const path = require('path');
-const fs = require('fs');
+const express = require('express');
+const app = express();
 
-module.exports = (req, res) => {
-  // Serve static files
-  if (req.method === 'GET' && req.url.startsWith('/styles')) {
-    const filePath = path.join(__dirname, '..', 'styles', req.url.replace('/styles', ''));
-    if (fs.existsSync(filePath)) {
-      res.sendFile(filePath);
-    } else {
-      res.status(404).send('CSS file not found');
-    }
-  }
-  // Serve other static assets like images and HTML files
-  else if (req.method === 'GET' && req.url.startsWith('/img')) {
-    const filePath = path.join(__dirname, '..', 'img', req.url.replace('/img', ''));
-    if (fs.existsSync(filePath)) {
-      res.sendFile(filePath);
-    } else {
-      res.status(404).send('Image not found');
-    }
-  } else if (req.method === 'GET' && req.url.startsWith('/public')) {
-    const filePath = path.join(__dirname, '..', 'public', req.url.replace('/public', ''));
-    if (fs.existsSync(filePath)) {
-      res.sendFile(filePath);
-    } else {
-      res.status(404).send('HTML file not found');
-    }
-  } else {
-    // Default route to handle requests and serve the main HTML page
-    res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
-  }
-};
+// Serve static files from the 'styles' and 'img' directories
+app.use('/styles', express.static(path.join(__dirname, '..', 'styles')));
+app.use('/img', express.static(path.join(__dirname, '..', 'img')));
+app.use('/public', express.static(path.join(__dirname, '..', 'public')));
+
+// Handle all requests by serving the index.html file
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
+
+module.exports = app;
